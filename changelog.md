@@ -1,4 +1,4 @@
-# 1.0.6
+# 1.1.0
 
 * Recon bot source code is now available on Github https://github.com/Josh5K/recon-bot
 
