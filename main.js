@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { Client, GatewayIntentBits, Partials, EmbedBuilder } from 'discord.js';
 import { joinVoiceChannel, getVoiceConnection } from '@discordjs/voice';
 import fs from 'fs';
+import { isRateLimited } from './helpers/rateLimiter.js';
 
 // Commands
 import { joke } from './commands/joke.js';
@@ -63,10 +64,15 @@ client.on('messageCreate', async (message) => {
 })
 
 const commandRegistry = [];
-function registerCommand(prefix, handler) {
+function registerCommand(prefix, handler, rateLimit = false) {
   commandRegistry.push({
     prefix,
     handler: async (message) => {
+      if(rateLimit) {
+        if(isRateLimited(message.author.id)) {
+          return message.reply("You have reached the hourly limit (15 per hour). Please try again later.");
+        }
+      }
       await handler(message, prefix);
       await moveMessage(message);
     }
@@ -74,9 +80,9 @@ function registerCommand(prefix, handler) {
 }
 
 registerCommand('recon tell me a joke', joke);
-registerCommand('recon says', says);
-registerCommand('roll for blame', blame );
-registerCommand('recon ask', tell );
+registerCommand('recon says', says, true);
+registerCommand('roll for blame', blame);
+registerCommand('recon ask', tell, true);
 registerCommand('recon update prompt', updatePrompt);
 registerCommand('recon list prompts', listPrompts);
 registerCommand('recon delete context', deleteContext);

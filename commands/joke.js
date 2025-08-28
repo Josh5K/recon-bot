@@ -6,7 +6,9 @@ let joke = async (message) => {
     let joke = await getJoke();
     message.reply(joke);
     let audioPath = await textToSpeech(joke);
-    playAudio(audioPath, message.member.voice.channel)
+    playAudio(audioPath, message.member.voice.channel).catch((error) => {
+        console.error('Error playing audio:', error);
+    });
 }
 
 export { joke }

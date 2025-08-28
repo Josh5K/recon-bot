@@ -10,13 +10,12 @@ export async function says(message, prefix) {
     if (message.member.roles.cache.some(role => role.name === 'Recon Says')) {
         let text = getStrippedContent(message, prefix);
         let channel = await getChannel(message)
-
-        try {
-            let audioPath = await textToSpeech(text);
-            playAudio(audioPath, channel)
-        } catch (error) {
-            console.error(error);
-            message.reply('Something broke ¯\\_(ツ)_/¯');
-        }
+        
+        textToSpeech(text)
+        .then(audioPath => playAudio(audioPath, channel))
+        .catch((error) => {
+            console.error('Error playing audio:', error);
+            return message.reply('Something broke ¯\\_(ツ)_/¯');
+        });
     }
 }

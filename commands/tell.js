@@ -19,13 +19,12 @@ let tell = async (message) => {
         let full_message = `${prompt} ${message.member.displayName} just asked: ${text}`
         let response = await sendToOpenAI(full_message)
         
-        try {
-            let audioPath = await textToSpeech(response);
-            playAudio(audioPath, channel)
-        } catch (error) {
-            console.error(error);
-            message.reply('Something broke ¯\\_(ツ)_/¯');
-        }
+        textToSpeech(response)
+        .then(audioPath => playAudio(audioPath, channel))
+        .catch((error) => {
+            console.error('Error playing audio:', error);
+            return message.reply('Something broke ¯\\_(ツ)_/¯');
+        });
     }
 }
 
