@@ -6,10 +6,6 @@ const audioQueues = new Map();
 const player = createAudioPlayer();
 
 export let playAudio = async (audioPath, channel) => {
-  if (!channel) {
-    console.log('No valid voice channel found for audio playback.');
-    return;
-  }
   const channelId = channel.id;
   if (!audioQueues.has(channelId)) {
     audioQueues.set(channelId, []);
